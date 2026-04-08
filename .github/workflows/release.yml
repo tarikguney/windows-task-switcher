@@ -1,4 +1,4 @@
-name: Release & Publish to Winget
+name: Release
 
 on:
   push:
@@ -34,23 +34,19 @@ jobs:
         shell: bash
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Build installer
+        run: |
+          $env:APP_VERSION = "${{ steps.version.outputs.version }}"
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\setup.iss
+        shell: pwsh
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: publish/WindowTaskSwitcher.exe
+          files: |
+            publish/WindowTaskSwitcher.exe
+            installer-output/WindowsTaskSwitcher-Setup.exe
           generate_release_notes: true
-
-      - name: Compute SHA256
-        id: sha256
-        shell: pwsh
-        run: |
-          $hash = (Get-FileHash publish/WindowTaskSwitcher.exe -Algorithm SHA256).Hash
-          echo "hash=$hash" >> $env:GITHUB_OUTPUT
-
-      - name: Submit to winget
-        uses: vedantmgoyal9/winget-releaser@v2
-        with:
-          identifier: tarikguney.WindowsTaskSwitcher
-          version: ${{ steps.version.outputs.version }}
-          installers-regex: '\.exe$'
-          token: ${{ secrets.WINGET_TOKEN }}
