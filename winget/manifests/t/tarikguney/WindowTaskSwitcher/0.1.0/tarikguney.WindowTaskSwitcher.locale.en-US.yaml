@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
+
+PackageIdentifier: tarikguney.WindowTaskSwitcher
+PackageVersion: 0.1.0
+PackageLocale: en-US
+Publisher: tarikguney
+PublisherUrl: https://github.com/tarikguney
+PackageName: Windows Task Switcher
+PackageUrl: https://github.com/tarikguney/windows-task-switcher
+License: MIT
+LicenseUrl: https://github.com/tarikguney/windows-task-switcher/blob/main/LICENSE
+ShortDescription: A fast, keyboard-driven window switcher for Windows with fuzzy search.
+Description: |-
+  Windows Task Switcher is a lightweight productivity tool that replaces the default Alt+Tab
+  experience with a fast, searchable window list. Press Ctrl+Space, type a few characters of
+  any window title or process name, and switch instantly. Features fuzzy matching with smart
+  ranking, learned preferences, optional Alt+Tab override, and automatic dark/light theme detection.
+Tags:
+  - window-switcher
+  - productivity
+  - alt-tab
+  - window-manager
+  - keyboard
+  - fuzzy-search
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0
