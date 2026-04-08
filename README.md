@@ -4,6 +4,8 @@ A fast, keyboard-driven window switcher for Windows — find and switch to any o
 
 ![Built with](https://img.shields.io/badge/.NET%208-WPF-blue) ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-lightgrey) ![License](https://img.shields.io/badge/license-MIT-green)
 
+![Windows Task Switcher](screenshot.png)
+
 ## Why?
 
 Alt+Tab breaks down when you have 15+ windows open. You end up squinting at tiny thumbnails or mashing Tab repeatedly. Windows Task Switcher replaces that with a searchable list — press a key, type a few characters, and you're there.
