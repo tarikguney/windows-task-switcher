@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WindowTaskSwitcher/WindowTaskSwitcher.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WindowTaskSwitcher.Tests/WindowTaskSwitcher.Tests.csproj" />
+  </Folder>
+</Solution>
