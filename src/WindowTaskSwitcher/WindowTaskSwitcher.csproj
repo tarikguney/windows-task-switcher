@@ -6,7 +6,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Prefer WPF types over WinForms when both namespaces are imported -->
+    <Using Include="System.Windows.Application" Alias="Application" />
+    <Using Include="System.Windows.MessageBox" Alias="MessageBox" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />

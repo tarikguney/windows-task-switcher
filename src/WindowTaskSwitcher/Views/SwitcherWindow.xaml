@@ -19,9 +19,10 @@
             CornerRadius="8"
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1"
+            Opacity="0.92"
             Margin="16">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.6" Color="Black" />
+            <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.5" Color="Black" />
         </Border.Effect>
 
         <Grid>
@@ -39,7 +40,8 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0"
-                           Text="&#x1F50D;"
+                           Text="&#xE721;"
+                           FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
                            FontSize="16"
                            Foreground="{DynamicResource SecondaryTextBrush}"
                            VerticalAlignment="Center"

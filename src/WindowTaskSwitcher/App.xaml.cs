@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using WindowTaskSwitcher.Interop;
 using WindowTaskSwitcher.Models;
@@ -95,8 +96,10 @@ public partial class App : Application
 
     private void SetupTrayIcon()
     {
+        var icon = IconService.CreateTrayIcon();
         _trayIcon = new TaskbarIcon
         {
+            Icon = icon,
             ToolTipText = "Window Task Switcher (Ctrl+Space)",
             MenuActivation = PopupActivationMode.RightClick
         };

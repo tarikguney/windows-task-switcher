@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using WindowTaskSwitcher.ViewModels;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace WindowTaskSwitcher.Views;
 
