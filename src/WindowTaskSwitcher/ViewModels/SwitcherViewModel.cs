@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WindowTaskSwitcher.Models;
@@ -12,6 +13,7 @@ public partial class SwitcherViewModel : ObservableObject
     private readonly FuzzySearchService _searchService;
     private readonly SearchLearningService _learningService;
     private readonly WindowSwitchService _switchService;
+    private readonly DispatcherTimer _debounceTimer;
 
     private List<WindowInfo> _allWindows = [];
 
@@ -36,17 +38,30 @@ public partial class SwitcherViewModel : ObservableObject
         _searchService = searchService;
         _learningService = learningService;
         _switchService = switchService;
+
+        _debounceTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(40)
+        };
+        _debounceTimer.Tick += (_, _) =>
+        {
+            _debounceTimer.Stop();
+            UpdateFilteredWindows();
+        };
     }
 
     partial void OnSearchTextChanged(string value)
     {
-        UpdateFilteredWindows();
+        // Debounce: restart the timer on each keystroke
+        _debounceTimer.Stop();
+        _debounceTimer.Start();
     }
 
     public void Show()
     {
         _allWindows = _enumerationService.GetWindows();
         SearchText = string.Empty;
+        _debounceTimer.Stop();
         UpdateFilteredWindows();
         SelectedIndex = 0;
         IsVisible = true;
@@ -54,6 +69,7 @@ public partial class SwitcherViewModel : ObservableObject
 
     public void Hide()
     {
+        _debounceTimer.Stop();
         IsVisible = false;
         SearchText = string.Empty;
     }
@@ -77,8 +93,8 @@ public partial class SwitcherViewModel : ObservableObject
         {
             var selected = FilteredWindows[SelectedIndex];
             _switchService.CloseWindow(selected.Window.Handle);
-            // Refresh the list
             _allWindows.RemoveAll(w => w.Handle == selected.Window.Handle);
+            _debounceTimer.Stop();
             UpdateFilteredWindows();
         }
     }
@@ -99,19 +115,17 @@ public partial class SwitcherViewModel : ObservableObject
 
     private void UpdateFilteredWindows()
     {
-        FilteredWindows.Clear();
+        // Build new results list off to the side, then swap in one batch
+        var newResults = new List<SearchResult>();
 
         if (string.IsNullOrEmpty(SearchText))
         {
-            // Show all windows, sorted by process name then title
             foreach (var window in _allWindows)
-            {
-                FilteredWindows.Add(new SearchResult(window, 0, []));
-            }
+                newResults.Add(new SearchResult(window, 0, []));
         }
         else
         {
-            var results = new List<(WindowInfo Window, int Score, List<int> MatchedIndices)>();
+            var scored = new List<(WindowInfo Window, int Score, List<int> MatchedIndices)>();
 
             foreach (var window in _allWindows)
             {
@@ -120,20 +134,21 @@ public partial class SwitcherViewModel : ObservableObject
                 {
                     double boost = _learningService.GetBoost(SearchText, window.ProcessName);
                     int boostedScore = (int)(score * boost);
-                    results.Add((window, boostedScore, matchedIndices));
+                    scored.Add((window, boostedScore, matchedIndices));
                 }
             }
 
-            // Sort by score descending
-            results.Sort((a, b) => b.Score.CompareTo(a.Score));
+            scored.Sort((a, b) => b.Score.CompareTo(a.Score));
 
-            foreach (var (window, score, matchedIndices) in results)
-            {
-                FilteredWindows.Add(new SearchResult(window, score, matchedIndices));
-            }
+            foreach (var (window, score, matchedIndices) in scored)
+                newResults.Add(new SearchResult(window, score, matchedIndices));
         }
 
-        // Clamp selection
+        // Single batch update: clear + repopulate
+        FilteredWindows.Clear();
+        foreach (var result in newResults)
+            FilteredWindows.Add(result);
+
         if (FilteredWindows.Count > 0)
             SelectedIndex = Math.Clamp(SelectedIndex, 0, FilteredWindows.Count - 1);
     }

@@ -17,17 +17,29 @@ public sealed class FuzzySearchService
         string queryLower = query.ToLowerInvariant();
         string candidateLower = candidate.ToLowerInvariant();
 
-        // Try matching from multiple start positions and take the best score.
+        // Quick check: does the candidate contain all query chars in order?
+        if (!CanMatch(queryLower, candidateLower))
+            return (0, []);
+
+        // Try matching from word-start positions and first occurrence only.
         // This prevents the greedy algorithm from locking onto early characters
         // and missing a much better match later (e.g., "common" matching the 'c' in
         // "Microsoft" instead of the word "Common").
         int bestScore = 0;
         List<int> bestIndices = [];
 
-        // Try starting from every position where the first query char appears
         for (int start = 0; start < candidateLower.Length; start++)
         {
             if (candidateLower[start] != queryLower[0])
+                continue;
+
+            // Only try: first occurrence, word starts, and camelCase transitions
+            bool isFirst = start == 0;
+            bool isWordStart = start > 0 && IsWordSeparator(candidate[start - 1]);
+            bool isCamelCase = start > 0 && char.IsUpper(candidate[start]) && char.IsLower(candidate[start - 1]);
+            bool isFirstOccurrence = candidateLower.IndexOf(queryLower[0]) == start;
+
+            if (!isFirst && !isWordStart && !isCamelCase && !isFirstOccurrence)
                 continue;
 
             var (score, indices) = ScoreFromPosition(queryLower, candidateLower, candidate, start);
@@ -89,6 +101,17 @@ public sealed class FuzzySearchService
             return (0, []);
 
         return (score, matchedIndices);
+    }
+
+    private static bool CanMatch(string queryLower, string candidateLower)
+    {
+        int qi = 0;
+        for (int i = 0; i < candidateLower.Length && qi < queryLower.Length; i++)
+        {
+            if (candidateLower[i] == queryLower[qi])
+                qi++;
+        }
+        return qi == queryLower.Length;
     }
 
     private static bool IsWordSeparator(char c) =>
