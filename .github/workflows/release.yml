@@ -1,0 +1,56 @@
+name: Release & Publish to Winget
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Run tests
+        run: dotnet test --configuration Release
+
+      - name: Publish single-file exe
+        run: |
+          dotnet publish src/WindowTaskSwitcher -c Release -r win-x64 --self-contained `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -o publish
+
+      - name: Get version from tag
+        id: version
+        shell: bash
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: publish/WindowTaskSwitcher.exe
+          generate_release_notes: true
+
+      - name: Compute SHA256
+        id: sha256
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash publish/WindowTaskSwitcher.exe -Algorithm SHA256).Hash
+          echo "hash=$hash" >> $env:GITHUB_OUTPUT
+
+      - name: Submit to winget
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: tarikguney.WindowTaskSwitcher
+          version: ${{ steps.version.outputs.version }}
+          installers-regex: '\.exe$'
+          token: ${{ secrets.WINGET_TOKEN }}
