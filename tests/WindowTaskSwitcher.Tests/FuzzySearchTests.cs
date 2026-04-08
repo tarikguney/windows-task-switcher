@@ -123,6 +123,26 @@ public class FuzzySearchTests
     }
 
     [Fact]
+    public void WordInMiddleOfLongTitle_Matches()
+    {
+        // "common" should match "Microsoft.Skype.Calling.Common – Microsoft Visual Studio"
+        // even though 'c' and 'o' appear early in "Microsoft"
+        var (score, _) = _sut.Match("common", "Microsoft.Skype.Calling.Common – Microsoft Visual Studio");
+        Assert.True(score > 0);
+    }
+
+    [Fact]
+    public void BestStartPosition_Wins()
+    {
+        // Matching from the word "Common" (word start, consecutive) should score higher
+        // than matching scattered characters from "Microsoft"
+        var (score, indices) = _sut.Match("common", "Microsoft.Skype.Calling.Common – Microsoft Visual Studio");
+        Assert.True(score > 0);
+        // The best match should start at "Common" (index 24), not at "c" in "Microsoft" (index 2)
+        Assert.True(indices[0] >= 24, $"Expected match to start at 'Common' (index 24+), but started at index {indices[0]}");
+    }
+
+    [Fact]
     public void QueryLongerThanCandidate_ReturnsZero()
     {
         var (score, _) = _sut.Match("very long query", "VS");

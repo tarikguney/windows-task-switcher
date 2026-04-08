@@ -17,12 +17,39 @@ public sealed class FuzzySearchService
         string queryLower = query.ToLowerInvariant();
         string candidateLower = candidate.ToLowerInvariant();
 
+        // Try matching from multiple start positions and take the best score.
+        // This prevents the greedy algorithm from locking onto early characters
+        // and missing a much better match later (e.g., "common" matching the 'c' in
+        // "Microsoft" instead of the word "Common").
+        int bestScore = 0;
+        List<int> bestIndices = [];
+
+        // Try starting from every position where the first query char appears
+        for (int start = 0; start < candidateLower.Length; start++)
+        {
+            if (candidateLower[start] != queryLower[0])
+                continue;
+
+            var (score, indices) = ScoreFromPosition(queryLower, candidateLower, candidate, start);
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestIndices = indices;
+            }
+        }
+
+        return (bestScore, bestIndices);
+    }
+
+    private static (int Score, List<int> MatchedIndices) ScoreFromPosition(
+        string queryLower, string candidateLower, string candidateOriginal, int startPos)
+    {
         var matchedIndices = new List<int>();
         int score = 0;
         int queryIndex = 0;
         int lastMatchIndex = -1;
 
-        for (int i = 0; i < candidateLower.Length && queryIndex < queryLower.Length; i++)
+        for (int i = startPos; i < candidateLower.Length && queryIndex < queryLower.Length; i++)
         {
             if (candidateLower[i] == queryLower[queryIndex])
             {
@@ -34,14 +61,14 @@ public sealed class FuzzySearchService
                     score += ConsecutiveBonus;
 
                 // Word start bonus (first char or after separator)
-                if (i == 0 || IsWordSeparator(candidate[i - 1]))
+                if (i == 0 || IsWordSeparator(candidateOriginal[i - 1]))
                     score += WordStartBonus;
 
                 // CamelCase bonus
-                if (i > 0 && char.IsUpper(candidate[i]) && char.IsLower(candidate[i - 1]))
+                if (i > 0 && char.IsUpper(candidateOriginal[i]) && char.IsLower(candidateOriginal[i - 1]))
                     score += CamelCaseBonus;
 
-                // Prefix bonus
+                // Prefix bonus (match starts at very beginning of candidate)
                 if (i == 0 && queryIndex == 0)
                     score += PrefixBonus;
 

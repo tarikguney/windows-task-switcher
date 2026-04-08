@@ -14,6 +14,7 @@ public partial class App : Application
     private Mutex? _singleInstanceMutex;
     private TaskbarIcon? _trayIcon;
     private HotkeyService? _hotkeyService;
+    private ThemeService? _themeService;
     private SwitcherWindow? _switcherWindow;
     private UserPreferences? _preferences;
 
@@ -32,6 +33,10 @@ public partial class App : Application
         }
 
         _preferences = UserPreferences.Load();
+
+        // Apply system theme (dark/light) before creating any UI
+        _themeService = new ThemeService();
+        _themeService.ApplyTheme();
 
         // Create services
         var enumerationService = new WindowEnumerationService();
@@ -134,6 +139,7 @@ public partial class App : Application
     {
         _trayIcon?.Dispose();
         _hotkeyService?.Dispose();
+        _themeService?.Dispose();
         _singleInstanceMutex?.ReleaseMutex();
         _singleInstanceMutex?.Dispose();
         base.OnExit(e);

@@ -15,9 +15,9 @@
         Deactivated="Window_Deactivated"
         PreviewKeyDown="Window_PreviewKeyDown">
 
-    <Border Background="{StaticResource BackgroundBrush}"
+    <Border Background="{DynamicResource BackgroundBrush}"
             CornerRadius="8"
-            BorderBrush="{StaticResource BorderBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1"
             Margin="16">
         <Border.Effect>
@@ -41,7 +41,7 @@
                 <TextBlock Grid.Column="0"
                            Text="&#x1F50D;"
                            FontSize="16"
-                           Foreground="{StaticResource SecondaryTextBrush}"
+                           Foreground="{DynamicResource SecondaryTextBrush}"
                            VerticalAlignment="Center"
                            Margin="8,0,4,0" />
 
@@ -52,7 +52,7 @@
             </Grid>
 
             <!-- Separator -->
-            <Border Grid.Row="1" Height="1" Background="{StaticResource BorderBrush}" Margin="8,4" />
+            <Border Grid.Row="1" Height="1" Background="{DynamicResource BorderBrush}" Margin="8,4" />
 
             <!-- Results List -->
             <ListBox x:Name="ResultsList"
@@ -83,11 +83,11 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Bd" Property="Background"
-                                                    Value="{StaticResource SelectedBrush}" />
+                                                    Value="{DynamicResource SelectedBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Bd" Property="Background"
-                                                    Value="#1A4FC1FF" />
+                                                    Value="{DynamicResource HoverBrush}" />
                                         </Trigger>
                                         <MultiTrigger>
                                             <MultiTrigger.Conditions>
@@ -95,7 +95,7 @@
                                                 <Condition Property="IsMouseOver" Value="True" />
                                             </MultiTrigger.Conditions>
                                             <Setter TargetName="Bd" Property="Background"
-                                                    Value="{StaticResource SelectedBrush}" />
+                                                    Value="{DynamicResource SelectedBrush}" />
                                         </MultiTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -123,7 +123,7 @@
                             <!-- Title -->
                             <TextBlock Grid.Column="1"
                                        Text="{Binding Window.Title}"
-                                       Foreground="{StaticResource TextBrush}"
+                                       Foreground="{DynamicResource TextBrush}"
                                        FontSize="14"
                                        FontFamily="Segoe UI"
                                        TextTrimming="CharacterEllipsis"
@@ -132,7 +132,7 @@
                             <!-- Process Name -->
                             <TextBlock Grid.Column="2"
                                        Text="{Binding Window.ProcessName}"
-                                       Foreground="{StaticResource SecondaryTextBrush}"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
                                        FontSize="11"
                                        FontFamily="Segoe UI"
                                        VerticalAlignment="Center"
