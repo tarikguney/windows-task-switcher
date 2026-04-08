@@ -50,7 +50,7 @@ jobs:
       - name: Submit to winget
         uses: vedantmgoyal9/winget-releaser@v2
         with:
-          identifier: tarikguney.WindowTaskSwitcher
+          identifier: tarikguney.WindowsTaskSwitcher
           version: ${{ steps.version.outputs.version }}
           installers-regex: '\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
