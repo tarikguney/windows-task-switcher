@@ -6,23 +6,6 @@ A fast, keyboard-driven window switcher for Windows — find and switch to any o
 
 ![Windows Task Switcher](screenshot.png)
 
-## Why?
-
-Alt+Tab breaks down when you have 15+ windows open. You end up squinting at tiny thumbnails or mashing Tab repeatedly. Windows Task Switcher replaces that with a searchable list — press a key, type a few characters, and you're there.
-
-**Before:** Alt+Tab → Tab → Tab → Tab → Tab → "was it this one?" → Tab → Enter
-
-**After:** Ctrl+Space → `sl gen` → Enter → You're in Slack #general
-
-## Features
-
-- **Fuzzy search** — type any part of a window title or process name. `chdev` matches "Chrome - DevTools". `ff` matches "Firefox".
-- **Smart ranking** — word-start matches score higher than mid-word. Consecutive characters score higher than scattered. The algorithm learns from your selections over time.
-- **Alt+Tab replacement** — optionally override Alt+Tab to show the switcher instead of the default Windows task view (opt-in, off by default).
-- **System theme aware** — automatically matches Windows dark/light mode. Switches live when you change your theme.
-- **Keyboard-first** — Up/Down or Tab to navigate, Enter to switch, Escape to dismiss, Ctrl+W to close a window.
-- **Lightweight** — single-file exe, ~60MB self-contained. Lives in the system tray.
-
 ## Installation
 
 ### Option 1: Installer (recommended)
@@ -40,6 +23,23 @@ git clone https://github.com/tarikguney/windows-task-switcher.git
 cd windows-task-switcher
 dotnet run --project src/WindowTaskSwitcher
 ```
+
+## Why?
+
+Alt+Tab breaks down when you have 15+ windows open. You end up squinting at tiny thumbnails or mashing Tab repeatedly. Windows Task Switcher replaces that with a searchable list — press a key, type a few characters, and you're there.
+
+**Before:** Alt+Tab → Tab → Tab → Tab → Tab → "was it this one?" → Tab → Enter
+
+**After:** Ctrl+Space → `sl gen` → Enter → You're in Slack #general
+
+## Features
+
+- **Fuzzy search** — type any part of a window title or process name. `chdev` matches "Chrome - DevTools". `ff` matches "Firefox".
+- **Smart ranking** — word-start matches score higher than mid-word. Consecutive characters score higher than scattered. The algorithm learns from your selections over time.
+- **Alt+Tab replacement** — optionally override Alt+Tab to show the switcher instead of the default Windows task view (opt-in, off by default).
+- **System theme aware** — automatically matches Windows dark/light mode. Switches live when you change your theme.
+- **Keyboard-first** — Up/Down or Tab to navigate, Enter to switch, Escape to dismiss, Ctrl+W to close a window.
+- **Lightweight** — single-file exe, ~60MB self-contained. Lives in the system tray.
 
 ## Usage
 
