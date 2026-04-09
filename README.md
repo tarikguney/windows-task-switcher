@@ -21,25 +21,25 @@ Alt+Tab breaks down when you have 15+ windows open. You end up squinting at tiny
 - **Alt+Tab replacement** — optionally override Alt+Tab to show the switcher instead of the default Windows task view (opt-in, off by default).
 - **System theme aware** — automatically matches Windows dark/light mode. Switches live when you change your theme.
 - **Keyboard-first** — Up/Down or Tab to navigate, Enter to switch, Escape to dismiss, Ctrl+W to close a window.
-- **Lightweight** — single-file exe, no installer, ~60MB self-contained. Lives in the system tray.
+- **Lightweight** — single-file exe, ~60MB self-contained. Lives in the system tray.
 
-## Quick Start
+## Installation
 
-### Option 1: Build from source
+### Option 1: Installer (recommended)
+
+Download `WindowsTaskSwitcher-Setup.exe` from the [latest release](https://github.com/tarikguney/windows-task-switcher/releases/latest). The installer optionally adds Windows startup and creates Start Menu shortcuts.
+
+### Option 2: Portable executable
+
+Download `WindowTaskSwitcher.exe` from the [latest release](https://github.com/tarikguney/windows-task-switcher/releases/latest) — no installation needed, just run it.
+
+### Option 3: Build from source
 
 ```bash
 git clone https://github.com/tarikguney/windows-task-switcher.git
 cd windows-task-switcher
 dotnet run --project src/WindowTaskSwitcher
 ```
-
-### Option 2: Single-file executable
-
-```bash
-dotnet publish src/WindowTaskSwitcher -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
-```
-
-Run `publish/WindowTaskSwitcher.exe` — no installation needed.
 
 ## Usage
 
